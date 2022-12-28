@@ -23,13 +23,98 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  openAppDialog() {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            child: Container(
+              height: 220,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Column(
+                  children: [
+                    Text(
+                      "Add",
+                      style: textStyle(28, Colors.black, FontWeight.w700),
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 125,
+                          height: 40,
+                          child: TextFormField(
+                            style: textStyle(20, Colors.black, FontWeight.w500),
+                            decoration: InputDecoration(
+                                hintText: "In kg",
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.black))),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        DropdownButton(
+                          onChanged: (value) {
+                            print(value);
+                          },
+                          hint: Text(
+                            "weight",
+                            style: textStyle(20, Colors.black, FontWeight.w700),
+                          ),
+                          dropdownColor: Colors.grey,
+                          elevation: 7,
+                          value: "weight",
+                          items: [
+                            DropdownMenuItem(
+                              value: "weight",
+                              child: Text(
+                                "Weight",
+                                style: textStyle(
+                                    20, Colors.black, FontWeight.w700),
+                              ),
+                            ),
+                            DropdownMenuItem(
+                              value: "height",
+                              child: Text(
+                                "Height",
+                                style: textStyle(
+                                    20, Colors.black, FontWeight.w700),
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15.0,
+                    ),
+                    IconButton(
+                      color: Colors.redAccent,
+                      iconSize: 50,
+                      onPressed: () => print("Pressed"),
+                      icon: Icon(Icons.double_arrow_rounded),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xffFBF5F5),
       floatingActionButton: Chip(
         backgroundColor: Colors.redAccent,
-        onDeleted: () => print("Clicked"),
+        onDeleted: () => openAppDialog(),
         deleteIcon: Icon(
           Icons.add,
           color: Colors.white,
