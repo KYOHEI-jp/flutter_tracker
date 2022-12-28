@@ -27,6 +27,19 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xffFBF5F5),
+      floatingActionButton: Chip(
+        backgroundColor: Colors.redAccent,
+        onDeleted: () => print("Clicked"),
+        deleteIcon: Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 26,
+        ),
+        label: Text(
+          "Add",
+          style: textStyle(22, Colors.white, FontWeight.w600),
+        ),
+      ),
       body: SingleChildScrollView(
         physics: ScrollPhysics(),
         child: Padding(
@@ -75,7 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               title: Text(
                                 "65 kg",
-                                style: textStyle(27, Colors.black, FontWeight.w600),
+                                style: textStyle(
+                                    27, Colors.black, FontWeight.w600),
                               ),
                               trailing: Icon(
                                 Icons.delete,
