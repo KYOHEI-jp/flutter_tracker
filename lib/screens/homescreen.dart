@@ -9,6 +9,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  TextEditingController controller = TextEditingController();
+  String? dropdownValue = "weight";
+
   buildTab(String text) {
     return Padding(
       padding: const EdgeInsets.only(right: 5.0),
@@ -28,81 +31,94 @@ class _HomeScreenState extends State<HomeScreen> {
         context: context,
         builder: (context) {
           return Dialog(
-            child: Container(
-              height: 220,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: Column(
-                  children: [
-                    Text(
-                      "Add",
-                      style: textStyle(28, Colors.black, FontWeight.w700),
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+            // TODO statefulBuilderについて、使い方、動きを調べる
+          child: StatefulBuilder(
+              builder: (BuildContext context, StateSetter stateSetter) {
+                return Container(
+                  height: 220,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: Column(
                       children: [
-                        Container(
-                          width: 125,
-                          height: 40,
-                          child: TextFormField(
-                            style: textStyle(20, Colors.black, FontWeight.w500),
-                            decoration: InputDecoration(
-                                hintText: "In kg",
-                                border: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 1, color: Colors.black))),
-                          ),
+                        Text(
+                          "Add",
+                          style: textStyle(28, Colors.black, FontWeight.w700),
                         ),
                         SizedBox(
-                          width: 10,
+                          height: 15,
                         ),
-                        DropdownButton(
-                          onChanged: (value) {
-                            print(value);
-                          },
-                          hint: Text(
-                            "weight",
-                            style: textStyle(20, Colors.black, FontWeight.w700),
-                          ),
-                          dropdownColor: Colors.grey,
-                          elevation: 7,
-                          value: "weight",
-                          items: [
-                            DropdownMenuItem(
-                              value: "weight",
-                              child: Text(
-                                "Weight",
-                                style: textStyle(
-                                    20, Colors.black, FontWeight.w700),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 125,
+                              height: 40,
+                              child: TextFormField(
+                                controller: controller,
+                                style: textStyle(20, Colors.black, FontWeight.w500),
+                                decoration: InputDecoration(
+                                    hintText: dropdownValue == "weight"
+                                        ? "In kg"
+                                        : "In cm",
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            width: 1, color: Colors.black))),
                               ),
                             ),
-                            DropdownMenuItem(
-                              value: "height",
-                              child: Text(
-                                "Height",
-                                style: textStyle(
-                                    20, Colors.black, FontWeight.w700),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            DropdownButton(
+                              onChanged: (value) {
+                                // TODO statesetterについて、使い方、動きを調べる
+                                stateSetter(
+                                  () {
+                                    dropdownValue = value as String?;
+                                  },
+                                );
+                              },
+                              hint: Text(
+                                "weight",
+                                style: textStyle(20, Colors.black, FontWeight.w700),
                               ),
-                            )
+                              dropdownColor: Colors.grey,
+                              elevation: 7,
+                              value: dropdownValue,
+                              items: [
+                                DropdownMenuItem(
+                                  value: "weight",
+                                  child: Text(
+                                    "Weight",
+                                    style: textStyle(
+                                        20, Colors.black, FontWeight.w700),
+                                  ),
+                                ),
+                                DropdownMenuItem(
+                                  value: "height",
+                                  child: Text(
+                                    "Height",
+                                    style: textStyle(
+                                        20, Colors.black, FontWeight.w700),
+                                  ),
+                                )
+                              ],
+                            ),
                           ],
+                        ),
+                        SizedBox(
+                          height: 15.0,
+                        ),
+                        IconButton(
+                          color: Colors.redAccent,
+                          iconSize: 50,
+                          onPressed: () => print("Pressed"),
+                          icon: Icon(Icons.double_arrow_rounded),
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 15.0,
-                    ),
-                    IconButton(
-                      color: Colors.redAccent,
-                      iconSize: 50,
-                      onPressed: () => print("Pressed"),
-                      icon: Icon(Icons.double_arrow_rounded),
-                    ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              }
             ),
           );
         });
