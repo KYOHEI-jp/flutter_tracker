@@ -41,8 +41,7 @@ class DatabaseService {
     String path = join(directory.path, dbname);
 
     // データベースに接続
-    return await openDatabase(path,
-        version: dbversion, onCreate: createTable);
+    return await openDatabase(path, version: dbversion, onCreate: createTable);
   }
 
   /// テーブル作成
@@ -56,5 +55,10 @@ class DatabaseService {
       )
       ''');
     print("created table");
+  }
+
+  Future<int?> addActivity(Map<String, dynamic> row) async {
+    Database? db = await instance.db;
+    return await db?.insert(tablename, row);
   }
 }
