@@ -61,4 +61,14 @@ class DatabaseService {
     Database? db = await instance.db;
     return await db?.insert(tablename, row);
   }
+
+  Future<List<Map<String, Object?>>?> getActivities(String category) async {
+    Database? db = await instance.db;
+    if (category == "All") {
+      return await db?.rawQuery('SELECT * FROM activities');
+    } else {
+      return await db?.rawQuery('SELECT * FROM activities WHERE type=?',
+          ['${category.toLowerCase()}']);
+    }
+  }
 }
