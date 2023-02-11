@@ -179,45 +179,55 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               FutureBuilder(
-                  future: DatabaseService.instance.getActivities(selectedTab),
-                  builder: (context, snapshot) {
-                    return ListView.builder(
-                        itemCount: 3,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 6.0),
-                            child: Card(
-                              elevation: 6.0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
+                future: DatabaseService.instance.getActivities(selectedTab),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+                  return ListView.builder(
+                    itemCount: 3,
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 6.0),
+                        child: Card(
+                          elevation: 6.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(6.0),
+                            child: ListTile(
+                              leading: Image(
+                                width: 50,
+                                height: 50,
+                                image: AssetImage('images/weight.png'),
+                                fit: BoxFit.cover,
                               ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(6.0),
-                                child: ListTile(
-                                  leading: Image(
-                                    width: 50,
-                                    height: 50,
-                                    image: AssetImage('images/weight.png'),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  title: Text(
-                                    "65 kg",
-                                    style: textStyle(
-                                        27, Colors.black, FontWeight.w600),
-                                  ),
-                                  trailing: Icon(
-                                    Icons.delete,
-                                    color: Colors.red,
-                                    size: 28,
-                                  ),
-                                ),
+                              title: Text(
+                                "65 kg",
+                                style: textStyle(
+                                    27, Colors.black, FontWeight.w600),
+                              ),
+                              trailing: Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                                size: 28,
                               ),
                             ),
-                          );
-                        });
-                  }),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
             ],
           ),
         ),
