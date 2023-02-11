@@ -1,6 +1,8 @@
 import 'package:fitness_tracker_app/utils.dart';
 import 'package:flutter/material.dart';
 
+import '../database/databaseservice.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -11,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController controller = TextEditingController();
   String? dropdownValue = "weight";
+  String selectedTab = "All";
 
   buildTab(String text) {
     return Padding(
@@ -32,94 +35,105 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context) {
           return Dialog(
             // TODO statefulBuilderについて、使い方、動きを調べる
-          child: StatefulBuilder(
-              builder: (BuildContext context, StateSetter stateSetter) {
-                return Container(
-                  height: 220,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          "Add",
-                          style: textStyle(28, Colors.black, FontWeight.w700),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 125,
-                              height: 40,
-                              child: TextFormField(
-                                controller: controller,
-                                style: textStyle(20, Colors.black, FontWeight.w500),
-                                decoration: InputDecoration(
-                                    hintText: dropdownValue == "weight"
-                                        ? "In kg"
-                                        : "In cm",
-                                    border: OutlineInputBorder(
-                                        borderSide: BorderSide(
-                                            width: 1, color: Colors.black))),
-                              ),
+            child: StatefulBuilder(
+                builder: (BuildContext context, StateSetter stateSetter) {
+              return Container(
+                height: 220,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        "Add",
+                        style: textStyle(28, Colors.black, FontWeight.w700),
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 125,
+                            height: 40,
+                            child: TextFormField(
+                              controller: controller,
+                              style:
+                                  textStyle(20, Colors.black, FontWeight.w500),
+                              decoration: InputDecoration(
+                                  hintText: dropdownValue == "weight"
+                                      ? "In kg"
+                                      : "In cm",
+                                  border: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          width: 1, color: Colors.black))),
                             ),
-                            SizedBox(
-                              width: 10,
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          DropdownButton(
+                            onChanged: (value) {
+                              // TODO statesetterについて、使い方、動きを調べる
+                              stateSetter(
+                                () {
+                                  dropdownValue = value as String?;
+                                },
+                              );
+                            },
+                            hint: Text(
+                              "weight",
+                              style:
+                                  textStyle(20, Colors.black, FontWeight.w700),
                             ),
-                            DropdownButton(
-                              onChanged: (value) {
-                                // TODO statesetterについて、使い方、動きを調べる
-                                stateSetter(
-                                  () {
-                                    dropdownValue = value as String?;
-                                  },
-                                );
-                              },
-                              hint: Text(
-                                "weight",
-                                style: textStyle(20, Colors.black, FontWeight.w700),
-                              ),
-                              dropdownColor: Colors.grey,
-                              elevation: 7,
-                              value: dropdownValue,
-                              items: [
-                                DropdownMenuItem(
-                                  value: "weight",
-                                  child: Text(
-                                    "Weight",
-                                    style: textStyle(
-                                        20, Colors.black, FontWeight.w700),
-                                  ),
+                            dropdownColor: Colors.grey,
+                            elevation: 7,
+                            value: dropdownValue,
+                            items: [
+                              DropdownMenuItem(
+                                value: "weight",
+                                child: Text(
+                                  "Weight",
+                                  style: textStyle(
+                                      20, Colors.black, FontWeight.w700),
                                 ),
-                                DropdownMenuItem(
-                                  value: "height",
-                                  child: Text(
-                                    "Height",
-                                    style: textStyle(
-                                        20, Colors.black, FontWeight.w700),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 15.0,
-                        ),
-                        IconButton(
-                          color: Colors.redAccent,
-                          iconSize: 50,
-                          onPressed: () => print("Pressed"),
-                          icon: Icon(Icons.double_arrow_rounded),
-                        ),
-                      ],
-                    ),
+                              ),
+                              DropdownMenuItem(
+                                value: "height",
+                                child: Text(
+                                  "Height",
+                                  style: textStyle(
+                                      20, Colors.black, FontWeight.w700),
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15.0,
+                      ),
+                      IconButton(
+                        color: Colors.redAccent,
+                        iconSize: 50,
+                        onPressed: () async {
+                          int? success =
+                              await DatabaseService.instance.addActivity({
+                            DatabaseService.type: dropdownValue,
+                            DatabaseService.data: DateTime.now().toString(),
+                            DatabaseService.data: double.parse(controller.text),
+                          });
+                          print(success);
+                          controller.clear();
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(Icons.double_arrow_rounded),
+                      ),
+                    ],
                   ),
-                );
-              }
-            ),
+                ),
+              );
+            }),
           );
         });
   }
@@ -164,45 +178,46 @@ class _HomeScreenState extends State<HomeScreen> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                child: ListView.builder(
-                    itemCount: 3,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(top: 6.0),
-                        child: Card(
-                          elevation: 6.0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: ListTile(
-                              leading: Image(
-                                width: 50,
-                                height: 50,
-                                image: AssetImage('images/weight.png'),
-                                fit: BoxFit.cover,
+              FutureBuilder(
+                  future: DatabaseService.instance.getActivities(selectedTab),
+                  builder: (context, snapshot) {
+                    return ListView.builder(
+                        itemCount: 3,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 6.0),
+                            child: Card(
+                              elevation: 6.0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
                               ),
-                              title: Text(
-                                "65 kg",
-                                style: textStyle(
-                                    27, Colors.black, FontWeight.w600),
-                              ),
-                              trailing: Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                                size: 28,
+                              child: Padding(
+                                padding: const EdgeInsets.all(6.0),
+                                child: ListTile(
+                                  leading: Image(
+                                    width: 50,
+                                    height: 50,
+                                    image: AssetImage('images/weight.png'),
+                                    fit: BoxFit.cover,
+                                  ),
+                                  title: Text(
+                                    "65 kg",
+                                    style: textStyle(
+                                        27, Colors.black, FontWeight.w600),
+                                  ),
+                                  trailing: Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                    size: 28,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      );
-                    }),
-              ),
+                          );
+                        });
+                  }),
             ],
           ),
         ),
